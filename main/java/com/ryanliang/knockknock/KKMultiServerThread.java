@@ -41,6 +41,7 @@ public class KKMultiServerThread implements Runnable {
 			while ((inputLine = (String) in.readObject()) != null) {
 				outputLine = kkp.processInput(inputLine);
 				out.writeObject(outputLine);
+				out.flush();
 				if (outputLine.equals("Bye"))  
 					break;
 			}

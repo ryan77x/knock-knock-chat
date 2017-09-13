@@ -117,6 +117,7 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 
 				if (userInput != null) {
 					out.writeObject(userInput);
+					out.flush();
 					userInput = null;
 				}
 			}
