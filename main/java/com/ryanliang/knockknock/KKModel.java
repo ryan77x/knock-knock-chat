@@ -1,6 +1,7 @@
 package com.ryanliang.knockknock;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Scanner;
  */
 public class KKModel implements KKModellable {
 	private static Scanner input;
+	private Path path;
 	private static List<KKJoke> kkJokeList = null;
 	private static String delimiter = "###";	
 	
@@ -22,6 +24,11 @@ public class KKModel implements KKModellable {
 	 * This is the only constructor defined for this class.
 	 */
 	public KKModel(){
+		this("kk-jokes.txt");
+	}
+	
+	public KKModel(String file){
+		this.path = Paths.get(file);
 		
 		//Read data from file once only and share with other KKModel instances.  Note that kkJokeList is declared as static.
 		if (kkJokeList == null){
@@ -37,7 +44,8 @@ public class KKModel implements KKModellable {
 	private void openFile() {
 		
 		try {
-			input = new Scanner(Paths.get("kk-jokes.txt"));
+			//input = new Scanner(Paths.get("kk-jokes.txt"));
+			input = new Scanner(path);
 		} catch (IOException e) {
 			System.err.println("Error opening file");
 			}

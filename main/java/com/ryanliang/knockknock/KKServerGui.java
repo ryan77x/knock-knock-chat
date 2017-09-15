@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -22,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * KKServerGui is a JFrame subclass defining the knock knock server app GUI.
@@ -33,12 +35,15 @@ public class KKServerGui extends JFrame {
 	
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("File");
+	private final JMenu optionMenu = new JMenu("Option");
 	private final JMenu helpMenu = new JMenu("Help");
 	
-	private final JMenuItem setupServerInfoFileMenu = new JMenuItem("Setup Server Info");
+	private final JMenuItem openFileMenu = new JMenuItem("Load joke file");
 	private final JMenuItem startServerFileMenu = new JMenuItem("Start Server");
 	private final JMenuItem stopServerFileMenu = new JMenuItem("Stop Server");
 	private final JMenuItem exitFileMenu = new JMenuItem("Exit");
+	
+	private final JMenuItem setupServerInfoOptionMenu = new JMenuItem("Setup Server Info");
 	
 	private final JMenuItem aboutHelpMenu = new JMenuItem("About");
 	
@@ -53,6 +58,8 @@ public class KKServerGui extends JFrame {
 	
 	private int kkServerPort = 5555;
 	private JTextField kkServerPortField;
+	
+	private String jokeFile = "kk-jokes.txt";
 	
 	private final String serverStarted = "<html>Server status: <font color='green'> Started</font></html>";
 	private final String serverStopped = "<html>Server status: <font color='blue'> Stopped</font></html>";
@@ -84,15 +91,18 @@ public class KKServerGui extends JFrame {
 	 * This method arranges the layout of the GUI components. 
 	 */
 	private void organizeUI() {
-		fileMenu.add(setupServerInfoFileMenu);
+		fileMenu.add(openFileMenu);
 		fileMenu.add(startServerFileMenu);
 		fileMenu.add(stopServerFileMenu);
 		fileMenu.addSeparator();
 		fileMenu.add(exitFileMenu);
 
+		optionMenu.add(setupServerInfoOptionMenu);
+		
 		helpMenu.add(aboutHelpMenu);
 		
 		menuBar.add(fileMenu);
+		menuBar.add(optionMenu);
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 		
@@ -123,12 +133,32 @@ public class KKServerGui extends JFrame {
 	 * This method configures listeners of the GUI components. 
 	 */
 	private void addListeners() {
-		setupServerInfoFileMenu.addActionListener(event -> setupServerInfo());
+		
+		openFileMenu.addActionListener((event) -> {
+			JFileChooser openDialog = new JFileChooser();
+			
+		    FileNameExtensionFilter filter = new FileNameExtensionFilter("text files", "txt");
+		    openDialog.setFileFilter(filter);
+		        int returnVal = openDialog.showOpenDialog(null);
+		        if(returnVal == JFileChooser.APPROVE_OPTION) {
+		           System.out.println("You chose to open this file: " +
+		        		   openDialog.getSelectedFile().getName());
+		           System.out.println("You chose to open this file: " +
+		        		   openDialog.getSelectedFile().getAbsolutePath());
+		           System.out.println("You chose to open this file: " +
+		        		   openDialog.getSelectedFile().getPath());
+		           
+		           jokeFile = openDialog.getSelectedFile().getAbsolutePath();
+		        }
+		});
+		
 		startServerFileMenu.addActionListener(event -> startServer());
 		stopServerFileMenu.addActionListener(event -> stopServer());
 		
 		exitFileMenu.addActionListener(event -> quitApp());
-	
+
+		setupServerInfoOptionMenu.addActionListener(event -> setupServerInfo());
+		
 		aboutHelpMenu.addActionListener(event -> {
 			JOptionPane.showMessageDialog(null, "Knock Knock Server v1.0 Copyright 2017 RLTech Inc");
 		});
@@ -213,7 +243,7 @@ public class KKServerGui extends JFrame {
 	 */
 	private void startServer() {
 
-		KKModellable model = new KKModel();
+		KKModellable model = new KKModel(jokeFile);
 		List<KKJoke> kkJokeList = model.getListOfKKJokes();
 		
 		if (kkJokeList.size() > 0){
