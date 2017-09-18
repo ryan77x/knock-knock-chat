@@ -21,21 +21,22 @@ public class KKModel implements KKModellable {
 	private static String delimiter = "###";	
 	
 	/**
-	 * This is the only constructor defined for this class.
+	 * Constructor that does not initialize anything.  It is just for instantiate the object.
 	 */
 	public KKModel(){
-		this("kk-jokes.txt");
+		//do nothing
 	}
 	
+	/**
+	 * Constructor for loading jokes from a text file.
+	 * @param file Is joke's file name or name with absolute full path
+	 */
 	public KKModel(String file){
 		this.path = Paths.get(file);
-		
-		//Read data from file once only and share with other KKModel instances.  Note that kkJokeList is declared as static.
-		if (kkJokeList == null){
-			openFile();
-			readFile();
-			closeFile();
-		}
+
+		openFile();
+		readFile();
+		closeFile();
 	}
 	
 	/**
@@ -44,7 +45,6 @@ public class KKModel implements KKModellable {
 	private void openFile() {
 		
 		try {
-			//input = new Scanner(Paths.get("kk-jokes.txt"));
 			input = new Scanner(path);
 		} catch (IOException e) {
 			System.err.println("Error opening file");
@@ -104,25 +104,23 @@ public class KKModel implements KKModellable {
 	@Override
 	public List<KKJoke> getListOfKKJokes() {
 		
-		List<KKJoke> copyList;
+		//empty list
+		List<KKJoke> copyList = new ArrayList<KKJoke>(0);
 		
 		if (kkJokeList != null){
 			int listSize = kkJokeList.size();
-
+			if (listSize < 1){
+				kkJokeList = null;
+			}
+			else{
 				copyList = new ArrayList<KKJoke>(listSize);
 
 				for (KKJoke joke : kkJokeList){
 					copyList.add(joke);
 				}
-			
-			if (listSize < 1){
-				kkJokeList = null;
 			}
 		}
-		else{
-			//empty list
-			copyList = new ArrayList<KKJoke>(0);
-		}
+
 		return copyList;
 	}
 }

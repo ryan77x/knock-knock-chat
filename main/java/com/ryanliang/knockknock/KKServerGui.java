@@ -38,11 +38,11 @@ public class KKServerGui extends JFrame {
 	private final JMenu optionMenu = new JMenu("Option");
 	private final JMenu helpMenu = new JMenu("Help");
 	
-	private final JMenuItem openFileMenu = new JMenuItem("Load joke file");
 	private final JMenuItem startServerFileMenu = new JMenuItem("Start Server");
 	private final JMenuItem stopServerFileMenu = new JMenuItem("Stop Server");
 	private final JMenuItem exitFileMenu = new JMenuItem("Exit");
 	
+	private final JMenuItem loadJokesOptionMenu = new JMenuItem("Load joke file");
 	private final JMenuItem setupServerInfoOptionMenu = new JMenuItem("Setup Server Info");
 	
 	private final JMenuItem aboutHelpMenu = new JMenuItem("About");
@@ -69,6 +69,7 @@ public class KKServerGui extends JFrame {
 	private JLabel serverStatusLabel = new JLabel("");
 	
 	private JLabel totalClientConectionLabel = new JLabel("");
+	private JLabel totalJokesLabel = new JLabel("");
 	
 	private BackgroundSocketListener socketListeningTask = null;
 	private BackgroundConnectionCheck connectionCheckingTask = null;
@@ -91,12 +92,12 @@ public class KKServerGui extends JFrame {
 	 * This method arranges the layout of the GUI components. 
 	 */
 	private void organizeUI() {
-		fileMenu.add(openFileMenu);
 		fileMenu.add(startServerFileMenu);
 		fileMenu.add(stopServerFileMenu);
 		fileMenu.addSeparator();
 		fileMenu.add(exitFileMenu);
 
+		optionMenu.add(loadJokesOptionMenu);
 		optionMenu.add(setupServerInfoOptionMenu);
 		
 		helpMenu.add(aboutHelpMenu);
@@ -125,6 +126,7 @@ public class KKServerGui extends JFrame {
 		
 		southPanel.setLayout(new BorderLayout());
 		southPanel.add(totalClientConectionLabel, BorderLayout.WEST);
+		southPanel.add(totalJokesLabel, BorderLayout.EAST);
 		
 		add(southPanel, BorderLayout.SOUTH);
 	}
@@ -134,20 +136,13 @@ public class KKServerGui extends JFrame {
 	 */
 	private void addListeners() {
 		
-		openFileMenu.addActionListener((event) -> {
+		loadJokesOptionMenu.addActionListener((event) -> {
 			JFileChooser openDialog = new JFileChooser();
 			
 		    FileNameExtensionFilter filter = new FileNameExtensionFilter("text files", "txt");
 		    openDialog.setFileFilter(filter);
 		        int returnVal = openDialog.showOpenDialog(null);
-		        if(returnVal == JFileChooser.APPROVE_OPTION) {
-		           System.out.println("You chose to open this file: " +
-		        		   openDialog.getSelectedFile().getName());
-		           System.out.println("You chose to open this file: " +
-		        		   openDialog.getSelectedFile().getAbsolutePath());
-		           System.out.println("You chose to open this file: " +
-		        		   openDialog.getSelectedFile().getPath());
-		           
+		        if(returnVal == JFileChooser.APPROVE_OPTION) {	           
 		           jokeFile = openDialog.getSelectedFile().getAbsolutePath();
 		        }
 		});
@@ -245,8 +240,10 @@ public class KKServerGui extends JFrame {
 
 		KKModellable model = new KKModel(jokeFile);
 		List<KKJoke> kkJokeList = model.getListOfKKJokes();
+		int numOfJokes = kkJokeList.size();
+		totalJokesLabel.setText("Total jokes: " + String.valueOf(numOfJokes));
 		
-		if (kkJokeList.size() > 0){
+		if (numOfJokes > 0){
 			if (socketListeningTask == null){
 				socketListeningTask = new BackgroundSocketListener(kkServerPort, serverStatusLabel);
 				socketListeningTask.execute();
@@ -264,6 +261,7 @@ public class KKServerGui extends JFrame {
 		else{
 			//Do not start server because joke list is empty
 			serverStatusLabel.setText(jokesNotFound);
+			System.err.println("Empty joke source");
 			Utility.displayErrorMessage("Jokes not found or missing the \" kk-jokes.txt \" file which must be stored in the same path as this server app.  "
 			+ "Each line or joke in the \" kk-jokes.txt \" file must also be formatted as \" clue ### answer \" without the quotes.");
 		}
@@ -289,6 +287,7 @@ public class KKServerGui extends JFrame {
 		try {
 			FileOutputStream fileOut = new FileOutputStream("server-info.dat");
 			out = new ObjectOutputStream(fileOut);
+			out.writeObject(jokeFile);
 			out.writeObject(kkServerPort);
 			out.flush();
 		} catch (FileNotFoundException e) {
@@ -316,9 +315,11 @@ public class KKServerGui extends JFrame {
 		try {
 			FileInputStream fileIn = new FileInputStream("server-info.dat");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
+			jokeFile = (String ) in.readObject();
 			kkServerPort = (int) in.readObject();
 			in.close();
 		} catch (Exception e) {
+			jokeFile = "kk-jokes.txt";
 			kkServerPort = 5555;
 			//e.printStackTrace();
 			System.err.println("server-info.dat file is likely missing but it should be created automatically when this app is closed.");

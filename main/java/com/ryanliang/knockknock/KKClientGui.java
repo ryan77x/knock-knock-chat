@@ -33,12 +33,14 @@ public class KKClientGui extends JFrame {
 
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("File");
+	private final JMenu optionMenu = new JMenu("Option");
 	private final JMenu helpMenu = new JMenu("Help");
 	
-	private final JMenuItem setupServerInfoFileMenu = new JMenuItem("Setup Server Info");
 	private final JMenuItem connectFileMenu = new JMenuItem("Connect To Server");
 	private final JMenuItem disconnectFileMenu = new JMenuItem("Disconnect");
 	private final JMenuItem exitFileMenu = new JMenuItem("Exit");
+	
+	private final JMenuItem setupServerInfoOptionMenu = new JMenuItem("Setup Server Info");
 	
 	private final JMenuItem aboutHelpMenu = new JMenuItem("About");
 	
@@ -82,15 +84,17 @@ public class KKClientGui extends JFrame {
 	 * This method arranges the layout of the GUI components. 
 	 */
 	private void organizeUI() {
-		fileMenu.add(setupServerInfoFileMenu);
 		fileMenu.add(connectFileMenu);
 		fileMenu.add(disconnectFileMenu);
 		fileMenu.addSeparator();
 		fileMenu.add(exitFileMenu);
 		
+		optionMenu.add(setupServerInfoOptionMenu);
+		
 		helpMenu.add(aboutHelpMenu);
 		
 		menuBar.add(fileMenu);
+		menuBar.add(optionMenu);
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 		
@@ -121,7 +125,7 @@ public class KKClientGui extends JFrame {
 	 * This method configures listeners of the GUI components. 
 	 */
 	private void addListeners() {
-		setupServerInfoFileMenu.addActionListener(event -> setupServerInfo());		
+		setupServerInfoOptionMenu.addActionListener(event -> setupServerInfo());		
 		connectFileMenu.addActionListener(event -> connect());
 		disconnectFileMenu.addActionListener(event -> disconnect());
 		

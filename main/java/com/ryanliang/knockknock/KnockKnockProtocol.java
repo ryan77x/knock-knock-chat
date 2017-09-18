@@ -45,40 +45,45 @@ public class KnockKnockProtocol{
 	 */
 	public String processInput(String theInput) {
 		String theOutput = null;
-
-		if (state == KKProtocolState.WAITING) {
-			theOutput = "Knock! Knock!";
-			state = KKProtocolState.SENTKNOCKKNOCK;
-		} else if (state == KKProtocolState.SENTKNOCKKNOCK) {
-			if (theInput.equalsIgnoreCase(whoIsThere)) {
-				theOutput = kkJokeList.get(currentJoke).getClue();
-				state = KKProtocolState.SENTCLUE;
-			} else {
-				theOutput = "You're supposed to say \"" + whoIsThere + "\"! " +
-						"Try again. Knock! Knock!";
-			}
-		} else if (state == KKProtocolState.SENTCLUE) {
-			if (theInput.equalsIgnoreCase(kkJokeList.get(currentJoke).getClue() + " who?")) {
-				theOutput = kkJokeList.get(currentJoke).getAnswer() + " Want another? (y/n)";
-				state = KKProtocolState.ANOTHER;
-			} else {
-				theOutput = "You're supposed to say \"" + 
-						kkJokeList.get(currentJoke).getClue() + 
-						" who?\"" + 
-						"! Try again. Knock! Knock!";
-				state = KKProtocolState.SENTKNOCKKNOCK;
-			}
-		} else if (state == KKProtocolState.ANOTHER) {
-			if (theInput.equalsIgnoreCase("y")) {
+		
+		if (NUMJOKES < 1){
+			System.err.println("Empty joke source");
+		}
+		else {
+			if (state == KKProtocolState.WAITING) {
 				theOutput = "Knock! Knock!";
-				if (currentJoke == (NUMJOKES - 1))
-					currentJoke = 0;
-				else
-					currentJoke++;
 				state = KKProtocolState.SENTKNOCKKNOCK;
-			} else {
-				theOutput = "Bye";
-				state = KKProtocolState.WAITING;
+			} else if (state == KKProtocolState.SENTKNOCKKNOCK) {
+				if (theInput.equalsIgnoreCase(whoIsThere)) {
+					theOutput = kkJokeList.get(currentJoke).getClue();
+					state = KKProtocolState.SENTCLUE;
+				} else {
+					theOutput = "You're supposed to say \"" + whoIsThere + "\"! " +
+							"Try again. Knock! Knock!";
+				}
+			} else if (state == KKProtocolState.SENTCLUE) {
+				if (theInput.equalsIgnoreCase(kkJokeList.get(currentJoke).getClue() + " who?")) {
+					theOutput = kkJokeList.get(currentJoke).getAnswer() + " Want another? (y/n)";
+					state = KKProtocolState.ANOTHER;
+				} else {
+					theOutput = "You're supposed to say \"" + 
+							kkJokeList.get(currentJoke).getClue() + 
+							" who?\"" + 
+							"! Try again. Knock! Knock!";
+					state = KKProtocolState.SENTKNOCKKNOCK;
+				}
+			} else if (state == KKProtocolState.ANOTHER) {
+				if (theInput.equalsIgnoreCase("y")) {
+					theOutput = "Knock! Knock!";
+					if (currentJoke == (NUMJOKES - 1))
+						currentJoke = 0;
+					else
+						currentJoke++;
+					state = KKProtocolState.SENTKNOCKKNOCK;
+				} else {
+					theOutput = "Bye";
+					state = KKProtocolState.WAITING;
+				}
 			}
 		}
 		return theOutput;
