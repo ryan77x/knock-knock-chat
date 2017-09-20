@@ -25,6 +25,9 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * KKServerGui is a JFrame subclass defining the knock knock server app GUI.
  * @author Ryan L.
@@ -32,7 +35,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @since 1.7
  */
 public class KKServerGui extends JFrame {
-	
+    private static Logger logger;
+    static{
+    	System.setProperty("logFileName", "server.log");
+    	logger = LogManager.getLogger();
+    }
+    
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("File");
 	private final JMenu optionMenu = new JMenu("Option");
@@ -219,6 +227,7 @@ public class KKServerGui extends JFrame {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				System.err.println("thread sleep method of KKServerGUI is being interrupted.");
+				logger.error("thread sleep method of KKServerGUI is being interrupted.");
 			}
 			
 			ConnectionCounter.resetConnectionCounter();
@@ -262,6 +271,7 @@ public class KKServerGui extends JFrame {
 			//Do not start server because joke list is empty
 			serverStatusLabel.setText(jokesNotFound);
 			System.err.println("Empty joke source");
+			logger.info("Empty joke source");
 			Utility.displayErrorMessage("Jokes not found or missing the \" kk-jokes.txt \" file which must be stored in the same path as this server app.  "
 			+ "Each line or joke in the \" kk-jokes.txt \" file must also be formatted as \" clue ### answer \" without the quotes.");
 		}
@@ -275,6 +285,7 @@ public class KKServerGui extends JFrame {
     	if (answer == JOptionPane.YES_OPTION){
     		stopServer(); 
     		saveData();
+    		logger.trace("Server app exits");
     		System.exit(0);
     	}
     }
@@ -291,9 +302,12 @@ public class KKServerGui extends JFrame {
 			out.writeObject(kkServerPort);
 			out.flush();
 		} catch (FileNotFoundException e) {
-			System.err.println("saving server-info.dat file is encountering an error for some reason.");	
+			System.err.println("saving server-info.dat file is encountering an error for some reason.");
+			logger.error("saving server-info.dat file is encountering an error for some reason.");
+			
 		} catch (IOException e) {
 			System.err.println("saving server-info.dat file is encountering an error for some reason.");	
+			logger.error("saving server-info.dat file is encountering an error for some reason.");
 		} 
 		finally {
 			if (out != null){
@@ -301,7 +315,8 @@ public class KKServerGui extends JFrame {
 					out.close();
 				}
 				catch (IOException e){
-					System.err.println("saving server-info.dat file is encountering an error for some reason.");	
+					System.err.println("saving server-info.dat file is encountering an error for some reason.");
+					logger.error("saving server-info.dat file is encountering an error for some reason.");
 				}
 			}
 		}
@@ -323,6 +338,7 @@ public class KKServerGui extends JFrame {
 			kkServerPort = 5555;
 			//e.printStackTrace();
 			System.err.println("server-info.dat file is likely missing but it should be created automatically when this app is closed.");
+			logger.info("server-info.dat file is likely missing but it should be created automatically when this app is closed.");
 		}	
 	}
 

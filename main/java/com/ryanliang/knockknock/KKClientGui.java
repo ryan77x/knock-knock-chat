@@ -23,6 +23,9 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * KKClientGui is a JFrame subclass defining the knock knock client app GUI.
  * @author Ryan L.
@@ -30,7 +33,12 @@ import javax.swing.WindowConstants;
  * @since 1.7
  */
 public class KKClientGui extends JFrame {
-
+    private static Logger logger;
+    static{
+    	System.setProperty("logFileName", "client.log");
+    	logger = LogManager.getLogger();
+    }
+    
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("File");
 	private final JMenu optionMenu = new JMenu("Option");
@@ -220,6 +228,7 @@ public class KKClientGui extends JFrame {
     	if (answer == JOptionPane.YES_OPTION){
     		disconnect(); 
     		saveData();
+    		logger.trace("Client app exits");
     		System.exit(0);
     	}
     }
@@ -239,6 +248,7 @@ public class KKClientGui extends JFrame {
 		} catch (Exception e) {
 			//e.printStackTrace();
 			System.err.println("saving client-info.dat file is encountering an error for some reason.");
+			logger.error("saving client-info.dat file is encountering an error for some reason.");
 		}
 	}
 	
@@ -258,6 +268,7 @@ public class KKClientGui extends JFrame {
 			kkServerPort = 5555;
 			//e.printStackTrace();
 			System.err.println("client-info.dat file is likely missing but it should be created automatically when this app is closed.");
+			logger.info("client-info.dat file is likely missing but it should be created automatically when this app is closed.");
 		}	
 	}
 }
