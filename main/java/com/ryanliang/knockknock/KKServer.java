@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * The knock knock app displays a new server GUI window.
  * @author Ryan L.
@@ -11,9 +14,9 @@ import java.awt.Toolkit;
  * @since 1.7
  */
 public class KKServer {
-
+    private static Logger logger = LogManager.getLogger();
 	public static void main(String[] args) {
-
+		logger.info("Server starts");
 		EventQueue.invokeLater(() -> {
 
 			KKServerGui kkServer = new KKServerGui();

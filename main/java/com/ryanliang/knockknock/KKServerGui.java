@@ -175,7 +175,7 @@ public class KKServerGui extends JFrame {
 			try {
 				Runtime.getRuntime().exec("java -jar KKClient.jar");
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				//e1.printStackTrace();
 				Utility.displayErrorMessage("Fail to find or launch KKClient.jar client app.  Make sure Java run time (JRE) is installed and KKClient.jar is stored in the same path as this server app.");
 			}
 		});
