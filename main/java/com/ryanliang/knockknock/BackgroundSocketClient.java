@@ -18,6 +18,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * BackgroundSocketClient is a SwingWorker subclass utilized by the knock knock client app for processing socket network communication with the knock knock server. 
  * @author Ryan L.
@@ -25,7 +28,12 @@ import javax.swing.SwingWorker;
  * @since 1.7
  */
 public class BackgroundSocketClient extends SwingWorker<Void, String> {
-	
+    private static Logger logger;
+    static{
+    	System.setProperty("logFileName", "client.log");
+    	logger = LogManager.getLogger();
+    }
+    	
 	private String userInput = null;
     private JTextArea chatTextArea;
     private JLabel connectionStatusLabel;
@@ -60,6 +68,8 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	 */
 	@Override
 	public Void doInBackground(){
+		logger.trace("doInBackground() is called");
+		
 		connectToServer();
 		
 		return null;
@@ -70,6 +80,8 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	 */
 	@Override
 	protected void done(){
+		logger.trace("done() is called");
+		
 		if (exceptionErrorMessage.length() > 1){
 			connectionStatusLabel.setText("<html>Connection status: <font color='red'>Fail</font></html>");
 			chatTextArea.append(exceptionErrorMessage + "\n");
@@ -89,6 +101,8 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	 * This method is for establishing connection to the server. 
 	 */
 	private void connectToServer() {
+		logger.trace("connectToServer() is called");
+		
 		try {
 			kkSocket = new Socket(InetAddress.getByName(kkServerHost), kkServerPort);
 			out = new ObjectOutputStream(kkSocket.getOutputStream());
@@ -112,6 +126,7 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 					} catch (InterruptedException e) {
 						//e.printStackTrace();
 						System.err.println("thread sleep method of client SwingWorker is being interrupted.");
+						logger.error("thread sleep method of client SwingWorker is being interrupted.");
 					}
 				}
 
@@ -123,12 +138,15 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 			}
 		} catch (ClassNotFoundException e) {
 			System.err.println("Client side socket network communication error is encountered for some reason.");
+			logger.error("Client side socket network communication error is encountered for some reason.");
 		} catch (UnknownHostException e) {
 			exceptionErrorMessage = "Don't know about host " + kkServerHost;
 			System.err.println(exceptionErrorMessage);
+			logger.warn(exceptionErrorMessage);
 		} catch (IOException e) {
 			exceptionErrorMessage = "Couldn't get I/O for the connection to " + kkServerHost + ":" + kkServerPort;
 			System.err.println(exceptionErrorMessage);
+			logger.warn(exceptionErrorMessage);
 		} 
 		finally{
 			stopServer();
@@ -139,6 +157,7 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	 * This method is for freeing up resources. 
 	 */
 	public void stopServer() {
+		logger.trace("stopServer() is called");
 		
 		try {
 			if (kkSocket != null){
@@ -157,6 +176,7 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 		} catch (IOException e) {
 			//e.printStackTrace();
 			System.err.println("Client socket is being closed.");
+			logger.warn("Client socket is being closed.");
 		}
 
 	}
@@ -165,6 +185,8 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	 * This method is for accepting user text input.
 	 */
 	public void processUserInput(String userInput) {
+		logger.trace("processUserInput(String userInput) is called");
+		
 		this.userInput = userInput;
 	}
 }

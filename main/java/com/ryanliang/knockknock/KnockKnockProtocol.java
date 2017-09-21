@@ -3,6 +3,10 @@ package com.ryanliang.knockknock;
 import java.net.*;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 
 /**
@@ -12,6 +16,11 @@ import java.io.*;
  * @since 1.7
  */
 public class KnockKnockProtocol{
+    private static Logger logger;
+    static{
+    	System.setProperty("logFileName", "server.log");
+    	logger = LogManager.getLogger();
+    }
 
 	private int NUMJOKES;
 
@@ -44,6 +53,8 @@ public class KnockKnockProtocol{
 	 * This method process the customized network communication protocols between the server and the client.
 	 */
 	public String processInput(String theInput) {
+		logger.trace("processInput(String theInput) is called");
+		
 		String theOutput = null;
 		
 		if (NUMJOKES < 1){

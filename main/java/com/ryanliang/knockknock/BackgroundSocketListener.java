@@ -12,6 +12,9 @@ import java.util.concurrent.Executors;
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * BackgroundSocketListener is a SwingWorker subclass utilized by the knock knock server app for processing socket network communication with a knock knock client. 
  * @author Ryan L.
@@ -19,7 +22,12 @@ import javax.swing.SwingWorker;
  * @since 1.7
  */
 public class BackgroundSocketListener extends SwingWorker<Void, Void> {
-	
+    private static Logger logger;
+    static{
+    	System.setProperty("logFileName", "server.log");
+    	logger = LogManager.getLogger();
+    }
+    	
 	private ExecutorService executorService = Executors.newCachedThreadPool(); 
     private ServerSocket serverSocket = null;
 	private int kkServerPort;
@@ -46,6 +54,8 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 	 */
 	@Override
 	public Void doInBackground(){
+		logger.trace("doInBackground() is called");
+		
 		listenForClients();
 		
 		return null;
@@ -56,6 +66,8 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 	 */
 	@Override
 	protected void done(){
+		logger.trace("done() is called");
+		
 		if (exceptionErrorMessage.length() > 1){
 			serverStatusLabel.setText("<html>Connection status: <font color='red'>" + exceptionErrorMessage + "</font></html>");
 		}
@@ -65,6 +77,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 	 * This method is for freeing up resources. 
 	 */
 	public void stopServer() {
+		logger.trace("stopServer() is called");
 
 		try {
 			if (serverSocket != null){
@@ -82,6 +95,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 		} catch (IOException e) {
 			//e.printStackTrace();
 			System.err.println("Server socket is being closed.");
+			logger.warn("Server socket is being closed.");
 		}
 		finally{
 			listening = false;
@@ -93,6 +107,8 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 	 * This method is for establishing connection with client connection. 
 	 */
 	private void listenForClients() {
+		logger.trace("listenForClients() is called");
+		
 		listening = true;
 		
         try {
@@ -100,6 +116,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
         } catch (IOException e) {
             exceptionErrorMessage = "Could not listen on port " + kkServerPort;
             System.err.println(exceptionErrorMessage);
+            logger.warn(exceptionErrorMessage);
         }
 
         try {
@@ -112,6 +129,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
         catch (IOException e) {
             //e.printStackTrace();
 			System.err.println("Server listening socket is encountering an error likely due socket being closed.");
+			logger.warn("Server listening socket is encountering an error likely due socket being closed.");
 		}
 	}
 }

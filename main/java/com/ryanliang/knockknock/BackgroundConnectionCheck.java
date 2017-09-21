@@ -5,6 +5,9 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * BackgroundConnectionCheck is a SwingWorker subclass utilized by the knock knock server app for obtaining the current total number of client socket connections. 
  * @author Ryan L.
@@ -12,6 +15,12 @@ import javax.swing.SwingWorker;
  * @since 1.7
  */
 public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
+    private static Logger logger;
+    static{
+    	System.setProperty("logFileName", "server.log");
+    	logger = LogManager.getLogger();
+    }
+    
 	private JLabel totalClientConectionLabel;
     private boolean runLoop = false;
     
@@ -30,6 +39,7 @@ public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
 	 */
 	@Override
 	protected Void doInBackground(){
+		logger.trace("doInBackground() is called");
 		
 		runLoop = true;
 		
@@ -38,6 +48,7 @@ public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				System.err.println("thread sleep method of connection checking SwingWorker is being interrupted.");
+				logger.error("thread sleep method of connection checking SwingWorker is being interrupted.");
 			}
 			publish(String.valueOf(ConnectionCounter.getConnectionCounter()));
 		}
@@ -57,6 +68,8 @@ public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
 	 * This method stops the SwingwWorker execution. 
 	 */
 	public void stopCheckingConnection(){
+		logger.trace("stopCheckingConnection() is called");
+		
 		runLoop = false;
 	}
 }

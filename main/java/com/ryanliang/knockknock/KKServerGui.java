@@ -199,6 +199,8 @@ public class KKServerGui extends JFrame {
 	 * This method enables user to specify the server's port number.
 	 */
 	private void setupServerInfo() {
+		logger.trace("setupServerInfo() is called");
+		
 		   Object[] message = {
 		       "Server Port:", kkServerPortField,
 		   };
@@ -218,6 +220,7 @@ public class KKServerGui extends JFrame {
 	 * This method stops the server.
 	 */
 	private void stopServer() {
+		logger.trace("stopServer() is called");
 
 		if (socketListeningTask != null){
 			socketListeningTask.stopServer();
@@ -246,6 +249,7 @@ public class KKServerGui extends JFrame {
 	 * This method starts the server.
 	 */
 	private void startServer() {
+		logger.trace("startServer() is called");
 
 		KKModellable model = new KKModel(jokeFile);
 		List<KKJoke> kkJokeList = model.getListOfKKJokes();
@@ -281,6 +285,8 @@ public class KKServerGui extends JFrame {
 	 * This method terminates the server app.
 	 */
 	private void quitApp() {
+		logger.trace("quitApp() is called");
+		
     	int answer = JOptionPane.showConfirmDialog(null, "Exit App?");
     	if (answer == JOptionPane.YES_OPTION){
     		stopServer(); 
@@ -294,6 +300,8 @@ public class KKServerGui extends JFrame {
 	 * This method saves the server port info to a file.
 	 */
 	private void saveData() {
+		logger.trace("saveData() is called");
+		
 		ObjectOutputStream out = null;
 		try {
 			FileOutputStream fileOut = new FileOutputStream("server-info.dat");
@@ -326,7 +334,8 @@ public class KKServerGui extends JFrame {
 	 * This method restores the server port info from a file.
 	 */
 	private void loadData() {
-
+		logger.trace("loadData() is called");
+		
 		try {
 			FileInputStream fileIn = new FileInputStream("server-info.dat");
 			ObjectInputStream in = new ObjectInputStream(fileIn);

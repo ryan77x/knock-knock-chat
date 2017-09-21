@@ -1,6 +1,10 @@
 package com.ryanliang.knockknock;
 
 import java.net.*;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 
 /**
@@ -10,6 +14,12 @@ import java.io.*;
  * @since 1.7
  */
 public class KKMultiServerThread implements Runnable {
+    private static Logger logger;
+    static{
+    	System.setProperty("logFileName", "server.log");
+    	logger = LogManager.getLogger();
+    }
+    
 	private Socket socket = null;
 	private ObjectOutputStream out = null;
 	private ObjectInputStream in = null;
@@ -27,6 +37,7 @@ public class KKMultiServerThread implements Runnable {
 	 * This method runs on a unique thread and is for processing network communication with the knock knock client.
 	 */
 	public void run() {
+		logger.trace("run() is called");
 
 		try {
 			out = new ObjectOutputStream(socket.getOutputStream());
@@ -48,6 +59,7 @@ public class KKMultiServerThread implements Runnable {
 		} catch (IOException | ClassNotFoundException e) {
 			//e.printStackTrace();
 			System.err.println("Server side socket network communication error is encountered for some reason.");
+			logger.error("Server side socket network communication error is encountered for some reason.");
 		}
 		finally{
 			closeConnection();
@@ -59,6 +71,7 @@ public class KKMultiServerThread implements Runnable {
 	 * This method is for freeing up resources. 
 	 */
 	public void closeConnection() {
+		logger.trace("closeConnection() is called");
 
 		try {
 			if (socket != null){
@@ -76,6 +89,7 @@ public class KKMultiServerThread implements Runnable {
 		} catch (IOException e) {
 			//e.printStackTrace();
 			System.err.println("Server side socket is being closed.");
+			logger.warn("Server side socket is being closed.");
 		}			
 	}
 }

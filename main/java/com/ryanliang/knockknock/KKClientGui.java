@@ -160,29 +160,33 @@ public class KKClientGui extends JFrame {
 	 * This method enables user to specify the server's host name/ip address and port number.
 	 */
 	private void setupServerInfo() {
-		   Object[] message = {
-			   "Server Host Name or IP Address:", kkServerHostField,
-		       "Server Port:", kkServerPortField,
-		   };
+		logger.trace("setupServerInfo() is called");
 
-		   int option = JOptionPane.showConfirmDialog(null, message, "Setup Server", JOptionPane.OK_CANCEL_OPTION);
-		   if (option == JOptionPane.OK_OPTION) {
-			   kkServerHost = kkServerHostField.getText().trim();
-			   
-			   String portStr = kkServerPortField.getText().trim();
-			   if(Utility.isNumeric(portStr)){
-				   int port = Integer.valueOf(portStr);
-				   kkServerPort = (port > 0 && port < 65536?port:kkServerPort);
-			   }
-		   }
-		   kkServerHostField.setText(kkServerHost);
-		   kkServerPortField.setText(String.valueOf(kkServerPort));
+		Object[] message = {
+				"Server Host Name or IP Address:", kkServerHostField,
+				"Server Port:", kkServerPortField,
+		};
+
+		int option = JOptionPane.showConfirmDialog(null, message, "Setup Server", JOptionPane.OK_CANCEL_OPTION);
+		if (option == JOptionPane.OK_OPTION) {
+			kkServerHost = kkServerHostField.getText().trim();
+
+			String portStr = kkServerPortField.getText().trim();
+			if(Utility.isNumeric(portStr)){
+				int port = Integer.valueOf(portStr);
+				kkServerPort = (port > 0 && port < 65536?port:kkServerPort);
+			}
+		}
+		kkServerHostField.setText(kkServerHost);
+		kkServerPortField.setText(String.valueOf(kkServerPort));
 	}
 	
 	/**
 	 * This method handles the user chat input.
 	 */
 	private void sendUserInput() {
+		logger.trace("sendUserInput() is called");
+		
 		String userInput = userInputTextField.getText().trim();
 		userInputTextField.setText("");
 		
@@ -196,7 +200,8 @@ public class KKClientGui extends JFrame {
 	 * This method ends the network connection.
 	 */
 	private void disconnect() {
-
+		logger.trace("disconnect() is called");
+		
 		if (task != null){
 			task.stopServer();
 			task = null;
@@ -210,6 +215,7 @@ public class KKClientGui extends JFrame {
 	 * This method starts the network connection.
 	 */
 	public void connect() {
+		logger.trace("connect() is called");
 		
 		disconnect();
 		task = new BackgroundSocketClient(kkServerHost, kkServerPort, connectionStatusLabel, chatTextArea);
@@ -224,6 +230,8 @@ public class KKClientGui extends JFrame {
 	 * This method terminates the client app.
 	 */
 	private void quitApp() {
+		logger.trace("quitApp() is called");
+		
     	int answer = JOptionPane.showConfirmDialog(null, "Exit App?");
     	if (answer == JOptionPane.YES_OPTION){
     		disconnect(); 
@@ -237,6 +245,7 @@ public class KKClientGui extends JFrame {
 	 * This method saves the server host and port info to a file.
 	 */
 	private void saveData() {
+		logger.trace("saveData() is called");
 		
 		try {
 			FileOutputStream fileOut = new FileOutputStream("client-info.dat");
@@ -256,6 +265,7 @@ public class KKClientGui extends JFrame {
 	 * This method restores the server host and port info from a file.
 	 */
 	private void loadData() {
+		logger.trace("loadData() is called");
 
 		try {
 			FileInputStream fileIn = new FileInputStream("client-info.dat");

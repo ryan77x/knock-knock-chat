@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * KKModel implements KKModellable interface to get data from a source (such a file or database) or save data to a source. 
  * @author Ryan L.
@@ -15,6 +18,12 @@ import java.util.Scanner;
  * @since 1.7
  */
 public class KKModel implements KKModellable {
+    private static Logger logger;
+    static{
+    	System.setProperty("logFileName", "server.log");
+    	logger = LogManager.getLogger();
+    }
+    
 	private static Scanner input;
 	private Path path;
 	private static List<KKJoke> kkJokeList = null;
@@ -43,11 +52,13 @@ public class KKModel implements KKModellable {
 	 * This method is for opening a file. 
 	 */
 	private void openFile() {
+		logger.trace("openFile() is called");
 		
 		try {
 			input = new Scanner(path);
 		} catch (IOException e) {
 			System.err.println("Error opening file");
+			logger.error("Error opening file", e);
 			}
 		
 	}
@@ -56,6 +67,7 @@ public class KKModel implements KKModellable {
 	 * This method is for obtaining data from a file. 
 	 */
 	private void readFile() {
+		logger.trace("readFile() is called");
 
 		if (input != null){
 			kkJokeList = new ArrayList<KKJoke>(50);
@@ -79,11 +91,13 @@ public class KKModel implements KKModellable {
 			} 
 			catch (NoSuchElementException e) {
 				System.err.println("File improperly formed");
+				logger.error("File improperly formed", e);
 				//e.printStackTrace();
 				kkJokeList = null;
 			}
 			catch (IllegalStateException e) {
 				System.err.println("Error reading from file");
+				logger.error("Error reading from file", e);
 				kkJokeList = null;
 			}
 		}
@@ -93,6 +107,8 @@ public class KKModel implements KKModellable {
 	 * This method is for freeing up resources. 
 	 */
 	private void closeFile() {
+		logger.trace("closeFile() is called");
+		
 		if (input != null)
 			input.close();
 	}
@@ -103,7 +119,8 @@ public class KKModel implements KKModellable {
 	 */
 	@Override
 	public List<KKJoke> getListOfKKJokes() {
-		
+		logger.trace("getListOfKKJokes() is called");
+				
 		//empty list
 		List<KKJoke> copyList = new ArrayList<KKJoke>(0);
 		
