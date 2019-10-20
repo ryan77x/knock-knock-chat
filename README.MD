@@ -5,8 +5,8 @@ This Java desktop client/server app is for multiple users chat with the server. 
 <p>
 <ul>
   <li>
-    NOTE: Java, JDK and Eclipse are already installed in your system
-    NOTE: log4j library is included and located in /main/lib folder. <br>
+    NOTE: Java, JDK and Eclipse are already installed in your system. <br>
+    NOTE: log4j library is included and located in /main/lib folder. 
   </li>
   <li>
     Clone this project to your computer with GIT.
