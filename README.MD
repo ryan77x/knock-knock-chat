@@ -13,7 +13,8 @@ This Java desktop client/server app is for multiple users chat with the server. 
   </li>
   <li>
     To run the project:<br> 
-    Compile/run KKServer.java and KKClient.java located at com.ryanliang.knockknock
+    Compile/run KKServer.java and KKClient.java located at com.ryanliang.knockknock <br>
+    Sample chat joke files are located in /main folder and should be use in the server setting menu option.
   </li>
 </ul>
 </p>
